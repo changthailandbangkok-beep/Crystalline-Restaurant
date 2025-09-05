@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านอาหารหรู5ดาว - หมวดอาหาร</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #222;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f3f3f3;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c0392b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #222;
+        }
+        /* Style for the add to cart message */
+        #add-to-cart-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(1rem);
+            background: #c0392b;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px 0 rgba(192,57,43,0.15);
+            z-index: 50;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+        #add-to-cart-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-[#c0392b] shadow-sm py-4 px-6 md:px-12 flex items-center justify-between">
+        <!-- Logo/Site Name -->
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="text-2xl font-bold text-white hover:underline cursor-pointer">Crystalline Restaurant</a>
+            <nav class="hidden md:flex space-x-6 text-white">
+                <a href="index.html" class="hover:text-[#ffe5e0] transition-colors hover:underline cursor-pointer">หน้าแรก</a>
+                <a href="#" class="hover:text-[#ffe5e0] transition-colors font-semibold">เมนูอาหาร</a>
+                <a href="index010.html" class="hover:text-[#ffe5e0] transition-colors">ติดต่อเรา</a>
+            </nav>
+        </div>
+
+        <!-- User Actions -->
+        <div class="flex items-center space-x-4">
+            <a href="lookin01.html" id="login-btn" class="text-white hover:text-[#ffe5e0] transition-colors flex items-center">
+                <i class="fas fa-user mr-1"></i> เข้าสู่ระบบ
+            </a>
+            <button id="logout-btn" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center" style="display:none;">
+                <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+            </button>
+            <a href="index01.html" id="cart-btn" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center relative">
+                <i class="fas fa-shopping-cart mr-2"></i> ตะกร้า
+                <span id="cart-count-badge" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-[#c0392b] bg-white border border-[#c0392b] rounded-full shadow absolute -top-2 -right-2"></span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content - Manual Razors List -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <!-- Replaced the single button with a category section as per the image -->
+        <h2 class="text-3xl font-bold text-[#c0392b] mb-8 text-center">
+        หมวดหมู่อาหาร
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 mb-12">
+            <a href="index02.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍚</span>
+                <span class="text-center text-gray-700 font-medium">อาหารไทย</span>
+            </a>
+            <a href="index03.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🌍</span>
+                <span class="text-center text-gray-700 font-medium">อาหารสไตล์อังกฤษ</span>
+            </a>
+            <a href="index04.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍕</span>
+                <span class="text-center text-gray-700 font-medium">อาหารอิตาลี</span>
+            </a>
+            <a href="index05.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍟</span>
+                <span class="text-center text-gray-700 font-medium">เมนูทอด</span>
+            </a>
+            <a href="index06.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🥨</span>
+                <span class="text-center text-gray-700 font-medium">อาหารทานเล่น</span>
+            </a>
+            <a href="index07.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🥤</span>
+                <span class="text-center text-gray-700 font-medium">เครื่องดื่ม</span>
+            </a>
+            <a href="index08.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍮</span>
+                <span class="text-center text-gray-700 font-medium">ขนมหวาน</span>
+            </a>
+            <a href="index09.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍰</span>
+                <span class="text-center text-gray-700 font-medium">เค้ก</span>
+            </a>
+        </div>
+
+        <h1 class="text-4xl font-bold text-black mb-8 text-center">เครื่องดื่ม</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Food Card 1-20: Carbonara style -->
+            <!-- All 20 cards use .add-to-cart-btn and data attributes for cart integration -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำเปล่า.jpg" alt="น้ำเปล่า" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำเปล่า</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำดื่มสะอาด สดชื่น</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 20</span>
+                        <button id="addToCart-drink-water" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-water"
+                            data-name="น้ำเปล่า"
+                            data-price="20"
+                            data-image="น้ำเปล่า.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำเปล่า"
+                            data-desc="น้ำดื่มสะอาด สดชื่น"
+                            data-ingredients="น้ำเปล่า"
+                            data-price="20"
+                            data-image="น้ำเปล่า.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="โซดา.avif" alt="โซดา" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">โซดา</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำอัดลมซ่าสดชื่น</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 24</span>
+                        <button id="addToCart-drink-soda" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-soda"
+                            data-name="โซดา"
+                            data-price="24"
+                            data-image="โซดา.avif">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="โซดา"
+                            data-desc="น้ำอัดลมซ่าสดชื่น"
+                            data-ingredients="น้ำ, คาร์บอนไดออกไซด์, เกลือแร่"
+                            data-price="24"
+                            data-image="โซดา.avif">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="How to Make Thai Milk Tea _ Cha Yen.jpg" alt="ชาเย็น" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">ชาเย็น</h3>
+                    <p class="text-gray-700 text-sm mb-2">ชาหอมหวานมันกลมกล่อม</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 25</span>
+                        <button id="addToCart-drink-milktea" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-milktea"
+                            data-name="ชาเย็น"
+                            data-price="25"
+                            data-image="How to Make Thai Milk Tea _ Cha Yen.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="ชาเย็น"
+                            data-desc="ชาหอมหวานมันกลมกล่อม"
+                            data-ingredients="ชา, นมข้น, น้ำตาล, น้ำแข็ง"
+                            data-price="25"
+                            data-image="How to Make Thai Milk Tea _ Cha Yen.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="กาแฟเย็น.jpg" alt="กาแฟเย็น" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">กาแฟเย็น</h3>
+                    <p class="text-gray-700 text-sm mb-2">กาแฟหอมกรุ่น รสชาติกลมกล่อม</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 25</span>
+                        <button id="addToCart-drink-coffee" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-coffee"
+                            data-name="กาแฟเย็น"
+                            data-price="25"
+                            data-image="กาแฟเย็น.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="กาแฟเย็น"
+                            data-desc="กาแฟหอมกรุ่น รสชาติกลมกล่อม"
+                            data-ingredients="กาแฟ, นมข้น, น้ำตาล, น้ำแข็ง"
+                            data-price="25"
+                            data-image="กาแฟเย็น.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="โอเลี้ยง.webp" alt="โอเลี้ยง" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">โอเลี้ยง</h3>
+                    <p class="text-gray-700 text-sm mb-2">ชาหอมหวานมันกลมกล่อม</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 26</span>
+                        <button id="addToCart-drink-oleang" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-oleang"
+                            data-name="โอเลี้ยง"
+                            data-price="26"
+                            data-image="โอเลี้ยง.webp">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="โอเลี้ยง"
+                            data-desc="ชาหอมหวานมันกลมกล่อม"
+                            data-ingredients="กาแฟดำ, น้ำตาล, น้ำแข็ง"
+                            data-price="26"
+                            data-image="โอเลี้ยง.webp">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- ... (repeat for carbonara-6 to carbonara-20, all with .add-to-cart-btn and data attributes) ... -->
+            <!-- For brevity, only the first 5 are shown here, but all 20 should be updated in the same way -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="ชาเขียว.webp" alt="ชาเขียว" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">ชาเขียว</h3>
+                    <p class="text-gray-700 text-sm mb-2">ชาหอมหวานมันกลมกล่อม</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 25</span>
+                        <button id="addToCart-drink-greentea" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-greentea"
+                            data-name="ชาเขียว"
+                            data-price="25"
+                            data-image="ชาเขียว.webp">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="ชาเขียว"
+                            data-desc="ชาหอมหวานมันกลมกล่อม"
+                            data-ingredients="ชาเขียว, นม, น้ำตาล, น้ำแข็ง"
+                            data-price="25"
+                            data-image="ชาเขียว.webp">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำส้ม.jpg" alt="น้ำส้ม" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำส้ม</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำผลไม้สดชื่น หวานอมเปรี้ยว</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 30</span>
+                        <button id="addToCart-drink-orange" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-orange"
+                            data-name="น้ำส้ม"
+                            data-price="30"
+                            data-image="น้ำส้ม.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำส้ม"
+                            data-desc="น้ำผลไม้สดชื่น หวานอมเปรี้ยว"
+                            data-ingredients="น้ำส้ม, น้ำตาล, น้ำแข็ง"
+                            data-price="30"
+                            data-image="น้ำส้ม.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำมะพร้าว.jpg" alt="น้ำมะพร้าว" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำมะพร้าว</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำมะพร้าวสดชื่น หอมหวาน</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 40</span>
+                        <button id="addToCart-drink-coconut" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-coconut"
+                            data-name="น้ำมะพร้าว"
+                            data-price="40"
+                            data-image="น้ำมะพร้าว.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำมะพร้าว"
+                            data-desc="น้ำมะพร้าวสดชื่น หอมหวาน"
+                            data-ingredients="น้ำมะพร้าว, น้ำตาล, น้ำแข็ง"
+                            data-price="40"
+                            data-image="น้ำมะพร้าว.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="ชาน้ำมะนาว.jpg" alt="ชาน้ำมะนาว" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">ชาน้ำมะนาว</h3>
+                    <p class="text-gray-700 text-sm mb-2">ชาน้ำมะนาวสดชื่น หอมหวาน</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 25</span>
+                        <button id="addToCart-drink-lemontea" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-lemontea"
+                            data-name="ชาน้ำมะนาว"
+                            data-price="25"
+                            data-image="ชาน้ำมะนาว.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="ชาน้ำมะนาว"
+                            data-desc="ชาน้ำมะนาวสดชื่น หอมหวาน"
+                            data-ingredients="ชา, น้ำมะนาว, น้ำตาล, น้ำแข็ง"
+                            data-price="25"
+                            data-image="ชาน้ำมะนาว.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="coke.jpg" alt="โค้ก" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">โค้ก</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำอัดลมซ่า หอมหวาน</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 25</span>
+                        <button id="addToCart-drink-coke" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-coke"
+                            data-name="โค้ก"
+                            data-price="25"
+                            data-image="coke.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="โค้ก"
+                            data-desc="น้ำอัดลมซ่า หอมหวาน"
+                            data-ingredients="น้ำ, น้ำตาล, คาร์บอนไดออกไซด์, สี, กลิ่น"
+                            data-price="25"
+                            data-image="coke.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำเก๊กฮวย.jpg" alt="น้ำเก๊กฮวย" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำเก๊กฮวย</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำเก๊กฮวยหอมหวาน ชื่นใจ</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 30</span>
+                        <button id="addToCart-drink-chrysanthemum" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-chrysanthemum"
+                            data-name="น้ำเก๊กฮวย"
+                            data-price="30"
+                            data-image="น้ำเก๊กฮวย.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำเก๊กฮวย"
+                            data-desc="น้ำเก๊กฮวยหอมหวาน ชื่นใจ"
+                            data-ingredients="ดอกเก๊กฮวย, น้ำตาล, น้ำ"
+                            data-price="30"
+                            data-image="น้ำเก๊กฮวย.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำกระเจี๊ยบ.jpg" alt="น้ำกระเจี๊ยบ" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำกระเจี๊ยบ</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำกระเจี๊ยบหอมหวาน ชื่นใจ</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 35</span>
+                        <button id="addToCart-drink-roselle" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-roselle"
+                            data-name="น้ำกระเจี๊ยบ"
+                            data-price="35"
+                            data-image="น้ำกระเจี๊ยบ.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำกระเจี๊ยบ"
+                            data-desc="น้ำกระเจี๊ยบหอมหวาน ชื่นใจ"
+                            data-ingredients="ดอกกระเจี๊ยบ, น้ำตาล, น้ำ"
+                            data-price="35"
+                            data-image="น้ำกระเจี๊ยบ.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="น้ำมะนาวโซดา.jpg" alt="น้ำมะนาวโซดา" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">น้ำมะนาวโซดา</h3>
+                    <p class="text-gray-700 text-sm mb-2">น้ำมะนาวโซดาซ่าสดชื่น</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 30</span>
+                        <button id="addToCart-drink-lemon-soda" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="drink-lemon-soda"
+                            data-name="น้ำมะนาวโซดา"
+                            data-price="30"
+                            data-image="น้ำมะนาวโซดา.jpg">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="น้ำมะนาวโซดา"
+                            data-desc="น้ำมะนาวโซดาซ่าสดชื่น"
+                            data-ingredients="น้ำมะนาว, โซดา, น้ำตาล, น้ำแข็ง"
+                            data-price="30"
+                            data-image="น้ำมะนาวโซดา.jpg">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </main>
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-40 z-40 hidden"></div>
+    <div id="product-detail-modal" class="fixed z-50 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl w-full max-w-md p-6 hidden">
+        <button id="product-detail-modal-close" class="absolute top-2 right-2 text-gray-400 hover:text-[#c0392b] text-2xl focus:outline-none">&times;</button>
+        <img id="product-detail-modal-img" src="" alt="" class="w-full h-48 object-cover rounded-lg mb-4">
+        <h2 id="product-detail-modal-name" class="text-2xl font-bold text-[#c0392b] mb-2"></h2>
+        <p id="product-detail-modal-desc" class="text-gray-700 mb-2"></p>
+        <div class="mb-2">
+            <span class="font-semibold text-[#c0392b]">ส่วนผสม:</span>
+            <span id="product-detail-modal-ingredients" class="text-gray-600"></span>
+        </div>
+        <div class="text-xl font-bold text-[#c0392b] mb-2">
+            <span id="product-detail-modal-price"></span>
+        </div>
+    </div>
+
+    <!-- Add to Cart Message -->
+    <div id="add-to-cart-message" class="hidden">
+        <i class="fas fa-check-circle mr-2"></i> เพิ่มสินค้าลงตะกร้าแล้ว!
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-black text-white py-8 px-6 md:px-12 mt-auto">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-white">Crystalline Restaurant</h3>
+                <p class="text-white text-sm">
+                    Crystalline Restaurant บรรยากาศดี อาหารไทยต้นตำรับและนานาชาติ พร้อมบริการระดับพรีเมียม
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-white">ลิงก์ด่วน</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="text-white hover:text-[#c0392b] transition-colors">เมนูอาหารทั้งหมด</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-white">ติดต่อเรา</h3>
+                <p class="text-white text-sm">
+                    อีเมล: info@luxuryfood.com<br>
+                    โทร: 012-345-6789<br>
+                    ที่อยู่: 123 ถนนอาหารไทย, กรุงเทพฯ, 10000
+                </p>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                    <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-white text-sm mt-8 pt-6 border-t border-white/20">
+            &copy; 2025 <span class="text-[#c0392b]">Crystalline Restaurant</span>. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            // Modal logic for product details
+            const detailModal = document.getElementById('product-detail-modal');
+            const detailModalOverlay = document.getElementById('product-detail-modal-overlay');
+            const detailModalClose = document.getElementById('product-detail-modal-close');
+            const detailModalImg = document.getElementById('product-detail-modal-img');
+            const detailModalName = document.getElementById('product-detail-modal-name');
+            const detailModalDesc = document.getElementById('product-detail-modal-desc');
+            const detailModalIngredients = document.getElementById('product-detail-modal-ingredients');
+            const detailModalPrice = document.getElementById('product-detail-modal-price');
+
+            document.querySelectorAll('.show-detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!detailModal) return;
+                    detailModalImg.src = this.dataset.image;
+                    detailModalName.textContent = this.dataset.name;
+                    detailModalDesc.textContent = this.dataset.desc;
+                    detailModalIngredients.textContent = this.dataset.ingredients;
+                    detailModalPrice.textContent = '฿ ' + this.dataset.price;
+                    detailModal.classList.remove('hidden');
+                    detailModalOverlay.classList.remove('hidden');
+                });
+            });
+            if (detailModalClose) {
+                detailModalClose.addEventListener('click', function() {
+                    detailModal.classList.add('hidden');
+                    detailModalOverlay.classList.add('hidden');
+                });
+            }
+            if (detailModalOverlay) {
+                detailModalOverlay.addEventListener('click', function() {
+                    detailModal.classList.add('hidden');
+                    detailModalOverlay.classList.add('hidden');
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            const addToCartMessage = document.getElementById('add-to-cart-message');
+            const cartCountBadge = document.getElementById('cart-count-badge');
+            const CART_KEY = 'razorhub_cart';
+
+            function updateCartCount() {
+                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+                if (cartCountBadge) {
+                    cartCountBadge.textContent = count > 0 ? count : '';
+                }
+            }
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.dataset.id;
+                    const productName = this.dataset.name;
+                    const productPrice = parseFloat(this.dataset.price);
+                    const productImage = this.dataset.image;
+
+                    // Get current cart from localStorage
+                    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+                    // Check if product already exists in cart
+                    const existingItemIndex = cart.findIndex(item => item.id === productId);
+
+                    if (existingItemIndex > -1) {
+                        // If exists, just increase quantity
+                        cart[existingItemIndex].quantity++;
+                    } else {
+                        // If not, add new item
+                        cart.push({
+                            id: productId,
+                            name: productName,
+                            price: productPrice,
+                            quantity: 1,
+                            image: productImage
+                        });
+                    }
+
+                    // Save updated cart to localStorage
+                    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+                    // Update badge
+                    updateCartCount();
+
+                    // Show success message (เปลี่ยนข้อความเป็น "เพิ่มแล้ว")
+                    addToCartMessage.innerHTML = '<i class="fas fa-check-circle mr-2"></i> เพิ่มแล้ว!';
+                    addToCartMessage.classList.remove('hidden');
+                    addToCartMessage.classList.add('show');
+                    // เปลี่ยนข้อความปุ่มเป็น "เพิ่มแล้ว" ชั่วคราว
+                    const originalBtnText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check-circle mr-1"></i> เพิ่มแล้ว!';
+                    this.disabled = true;
+                    setTimeout(() => {
+                        addToCartMessage.classList.remove('show');
+                        setTimeout(() => {
+                            addToCartMessage.classList.add('hidden');
+                            // คืนข้อความเดิม
+                            addToCartMessage.innerHTML = '<i class="fas fa-check-circle mr-2"></i> เพิ่มสินค้าลงตะกร้าแล้ว!';
+                            this.innerHTML = originalBtnText;
+                            this.disabled = false;
+                        }, 300);
+                    }, 1200);
+                });
+            });
+
+            // Show cart count on page load
+            updateCartCount();
+        });
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD60lZDB8Qk-kl2GUL-_NK7JItML9S-TEc",
+            authDomain: "crystalline-restaurant.firebaseapp.com",
+            projectId: "crystalline-restaurant",
+            storageBucket: "crystalline-restaurant.firebasestorage.app",
+            messagingSenderId: "637558385298",
+            appId: "1:637558385298:web:ac380bfdabebb69009544b",
+            measurementId: "G-4RVP21DGJY"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // แสดง/ซ่อนปุ่ม login/logout ทันทีที่รู้สถานะผู้ใช้
+        firebase.auth().onAuthStateChanged(function(user) {
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            if (user) {
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'flex';
+            } else {
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        });
+
+        // logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            firebase.auth().signOut().then(function() {
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

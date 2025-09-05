@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystalline Restaurant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* การรีเซ็ตพื้นฐาน */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #c3329a;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #c0392b;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+            border: 2px solid #c0392b;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #c0392b;
+            border: 2px solid #c0392b;
+        }
+
+        /* ส่วนหัว (Header) */
+        .header {
+            background: #222;
+            color: #a28585;
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .logo {
+            color: #fff;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .header .main-nav ul {
+            display: flex;
+        }
+
+        .header .main-nav ul li {
+            margin-left: 20px;
+        }
+
+        .header .main-nav ul li a {
+            color: #fff;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .header .main-nav ul li a:hover {
+            color: #e74c3c;
+        }
+
+        /* ส่วนภาพหลัก (Hero Section) */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            overflow: hidden;
+            margin-top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slideshow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .mySlides {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .mySlides img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(60%);
+        }
+
+        .hero-text {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            z-index: 10;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-text p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* จุดนำทางสไลด์ */
+        .dot-container {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+            background-color: #717171;
+        }
+
+        /* แอนิเมชั่น fade */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
+        }
+
+        /* ส่วน About Us, Menu/Gallery, Contact */
+        .about-section, .menu-gallery-section, .contact-section {
+            padding: 80px 0;
+            text-align: center;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .about-section h2, .menu-gallery-section h2, .contact-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: #c0392b;
+        }
+
+        /* ส่วน About Us */
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+            text-align: left;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .about-text {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            font-size: 2.00em;
+            line-height: 1.8;
+        }
+
+        /* ส่วนเมนู/แกลเลอรี */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(192,57,43,0.18);
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s cubic-bezier(.4,2,.6,1);
+        }
+
+        .menu-item:hover img {
+            transform: scale(1.07);
+        }
+
+        .menu-item h3 {
+            margin: 15px 0 5px;
+            font-size: 1.4em;
+            color: #c0392b;
+        }
+
+        .menu-item p {
+            font-size: 0.95em;
+            color: #555;
+            padding: 0 15px 10px;
+        }
+
+        .menu-item .menu-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 18px;
+            margin-top: 10px;
+        }
+
+        .menu-item .price {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 0;
+            margin-top: 0;
+            text-align: left;
+            padding: 0;
+        }
+
+        .menu-item .btn {
+            border-radius: 999px;
+            padding: 10px 28px;
+            margin-left: auto;
+            margin-bottom: 0;
+            margin-top: 0;
+            font-size: 1em;
+            transition: background 0.3s, color 0.3s, border 0.3s, transform 0.2s;
+        }
+
+        .menu-item .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(192,57,43,0.15);
+        }
+
+        /* Pulse effect เมื่อคลิกปุ่มสั่งซื้อ */
+        .menu-item .btn:active {
+            animation: btnPulse 0.3s;
+        }
+        @keyframes btnPulse {
+            0% { transform: scale(1);}
+            50% { transform: scale(0.92);}
+            100% { transform: scale(1);}
+        }
+
+        /* Modal สำหรับรายละเอียดอาหารและรูปภาพ */
+        .modal-food-detail {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-food-detail.show {
+            display: flex !important;
+        }
+
+        .modal-food-content {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 2rem;
+            max-width: 28rem;
+            width: 100%;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #c0392b;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #e74c3c;
+        }
+
+        /* ส่วนติดต่อ */
+        .contact-section {
+            padding: 80px 0;
+            text-align: center;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .contact-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: #c0392b;
+        }
+
+        .contact-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+
+        .contact-info, .contact-form {
+            flex: 1;
+            min-width: 300px;
+            text-align: left;
+        }
+
+        .contact-info h3, .contact-form h3 {
+            color: #c0392b;
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
+            color: #c0392b;
+        }
+
+        .contact-form input[type="text"],
+        .contact-form input[type="email"],
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+        }
+
+        /* ส่วนท้าย (Footer) */
+        .footer {
+            background: #222;
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer .footer-col {
+            flex: 1;
+            min-width: 250px;
+            text-align: left;
+        }
+
+        .footer .footer-col h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .footer .footer-col p {
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+
+        .footer .footer-col ul {
+            padding: 0;
+        }
+
+        .footer .footer-col ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer .footer-col ul li a {
+            color: #ccc;
+            transition: color 0.3s ease;
+        }
+
+        .footer .footer-col ul li a:hover {
+            color: #fff;
+        }
+
+        .footer .social-links a {
+            color: #fff;
+            font-size: 1.5em;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .footer .social-links a:hover {
+            color: #e74c3c;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header .container {
+                flex-direction: column;
+            }
+
+            .header .main-nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .header .main-nav ul li {
+                margin: 0 10px 10px 10px;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-text p {
+                font-size: 1.2em;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .about-content, .contact-content, .footer .footer-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-image, .about-text, .contact-info, .contact-form, .footer-col {
+                width: 100%;
+                text-align: center;
+            }
+
+            .about-text p {
+                text-align: center;
+            }
+
+            .contact-info p {
+                text-align: center;
+            }
+
+            .contact-info i {
+                margin-right: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2em;
+            }
+
+            .hero-text p {
+                font-size: 1em;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .about-section, .menu-gallery-section, .contact-section {
+                padding: 50px 0;
+            }
+
+            .about-section h2, .menu-gallery-section h2, .contact-section h2 {
+                font-size: 2em;
+            }
+
+            .modal-food-content {
+                max-width: 95%;
+                max-height: 80vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">Crystalline Restaurant</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home">หน้าหลัก</a></li>
+                    <li><a href="#about">เกี่ยวกับเรา</a></li>
+                    <li><a href="#menu">เมนู</a></li>
+                    <li><a href="#contact">ติดต่อเรา</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero-section">
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="logo.jpg" alt="Delicious Food 1">
+            </div>
+        </div>
+        <div class="hero-text">
+            <h1>สัมผัสประสบการณ์รสชาติระดับพรีเมียม</h1>
+            <p>อร่อยล้ำไปกับเมนูคาวหวานและบรรยากาศอันอบอุ่น</p>
+            <a href="index.html" class="btn" id="menuBtn">Menu</a>
+        </div>
+        <div class="dot-container">
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>บรรยากาศ</h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="ran.jpg" alt="บรรยากาศร้าน">
+                </div>
+                <div class="about-text">
+                    <p>ร้านอาหารของเราก่อตั้งขึ้นด้วยความรักในอาหารและการบริการ เรามุ่งมั่นที่จะนำเสนอประสบการณ์การรับประทานอาหารที่น่าจดจำ ด้วยเมนูที่หลากหลาย วัตถุดิบคุณภาพเยี่ยม และบรรยากาศที่เป็นเรือนกระจก</p>
+                    <p>เชฟของเรามีประสบการณ์ยาวนานในการรังสรรค์เมนูเด็ด ทั้งอาหารไทยต้นตำรับและอาหารนานาชาติฟิวชั่น ที่จะทำให้คุณประทับใจไม่รู้ลืม</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="menu-gallery-section">
+        <div class="container">
+            <h2>เมนูยอดนิยม</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <img src="R1.jpg" alt="สปาเก็ตตี้คาโบนาร่า">
+                    <h3>สปาเก็ตตี้คาโบนาร่า</h3>
+                    <p>เส้นเหนียวนุ่ม คลุกซอสครีมเข้มข้น โรยชีสและเบคอน</p>
+                    <div class="menu-actions">
+                        <span class="price">฿259</span>
+                        <button id="showModal-carbonara" class="btn mt-2"><i class="fas fa-utensils mr-1"></i> สั่งซื้อ</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <img src="R3.jpg" alt="สเต็ก">
+                    <h3>Steak</h3>
+                    <p>สเต็กเนื้อนุ่ม ย่างระดับพรีเมียม ซอสสูตรพิเศษ</p>
+                    <div class="menu-actions">
+                        <span class="price">฿399</span>
+                        <button id="showModal-steak" class="btn mt-2"><i class="fas fa-utensils mr-1"></i> สั่งซื้อ</button>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <img src="R2.jpg" alt="ข้าวกระเพราหมูสับไข่ดาว">
+                    <h3>ข้าวกระเพราหมูสับไข่ดาว</h3>
+                    <p>รสจัดจ้าน หอมใบกระเพรา ไข่ดาวกรอบนอกนุ่มใน</p>
+                    <div class="menu-actions">
+                        <span class="price">฿89</span>
+                        <button id="showModal-krapao" class="btn mt-2"><i class="fas fa-utensils mr-1"></i> สั่งซื้อ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal สำหรับรายละเอียดอาหารและรูปภาพ -->
+    <div id="modal-food-detail" class="modal-food-detail">
+        <div class="modal-food-content">
+            <span class="close" id="closeModalFoodDetail">×</span>
+            <img id="modalFoodImg" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
+            <h3 id="modalFoodName" class="font-semibold text-lg text-black mb-2"></h3>
+            <p id="modalFoodDesc" class="text-gray-700 mb-2"></p>
+            <div id="modalFoodIngredients" class="mb-4">
+                <span class="font-semibold text-[#e74c3c]">ส่วนผสม:</span>
+                <ul class="list-disc list-inside text-gray-700 mt-1" id="modalFoodIngredientsList"></ul>
+            </div>
+            <span id="modalFoodPrice" class="text-[#c0392b] font-bold text-xl block mb-4"></span>
+            <button id="confirmOrderFood" class="btn w-full"><i class="fas fa-utensils mr-1"></i>ยืนยันสั่งซื้อ</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Crystalline Restaurant</h3>
+                    <p>บรรยากาศดี อาหารไทยต้นตำรับและนานาชาติ พร้อมบริการระดับพรีเมียม</p>
+                </div>
+                <div class="footer-col">
+                    <h3>ลิงก์ด่วน</h3>
+                    <ul>
+                        <li><a href="index.html">หน้าหลัก</a></li>
+                        <li><a href="#about">บรรยากาศ</a></li>
+                        <li><a href="#menu">เมนู</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <p>อีเมล CrystallineRestaurant@gmail.com</p>
+                    <p>เบอร์โทร 012-345-6789</p>
+                    <p>ที่อยู่ 123 ถนนสุขุมวิท ตำบลหนองปรือ อำเภอบางละมุง ชลบุรี 20150</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 Crystalline Restaurant.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+            setTimeout(showSlides, 5000);
+        }
+
+        function currentSlide(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[n-1].style.display = "block";
+            dots[n-1].className += " active";
+            slideIndex = n;
+        }
+
+        // ฟังก์ชันสำหรับ Modal รายละเอียดอาหารและรูปภาพ
+        document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal-food-detail');
+    const closeModal = document.getElementById('closeModalFoodDetail');
+    const confirmBtn = document.getElementById('confirmOrderFood');
+    const img = document.getElementById('modalFoodImg');
+    const name = document.getElementById('modalFoodName');
+    const desc = document.getElementById('modalFoodDesc');
+    const price = document.getElementById('modalFoodPrice');
+    const ingredientsList = document.getElementById('modalFoodIngredientsList');
+    let currentMenu = null;
+
+    const foodMenus = {
+        carbonara: {
+            id: 'carbonara',
+            name: 'สปาเก็ตตี้คาโบนาร่า',
+            price: 259,
+            image: 'R1.jpg',
+            desc: 'เส้นเหนียวนุ่ม คลุกซอสครีมเข้มข้น โรยชีสและเบคอน',
+            ingredients: ['เส้นสปาเก็ตตี้', 'ครีม', 'ชีส', 'เบคอน', 'ไข่', 'พริกไทยดำ']
+        },
+        steak: {
+            id: 'steak',
+            name: 'Steak',
+            price: 399,
+            image: 'R3.jpg',
+            desc: 'สเต็กเนื้อนุ่ม ย่างระดับพรีเมียม เสิร์ฟพร้อมซอสสูตรพิเศษ',
+            ingredients: ['เนื้อวัว/หมู', 'เกลือ', 'พริกไทย', 'น้ำมันมะกอก', 'ซอสสูตรพิเศษ', 'ผักเคียง']
+        },
+        krapao: {
+            id: 'krapao',
+            name: 'ข้าวกระเพราหมูสับไข่ดาว',
+            price: 89,
+            image: 'R2.jpg',
+            desc: 'รสจัดจ้าน หอมใบกระเพรา ไข่ดาวกรอบนอกนุ่มใน',
+            ingredients: ['ข้าวสวย', 'หมูสับ', 'ใบกระเพรา', 'พริก', 'กระเทียม', 'ซอสปรุงรส', 'ไข่ดาว']
+        }
+    };
+
+    Object.keys(foodMenus).forEach(key => {
+        const btn = document.getElementById('showModal-' + key);
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const menu = foodMenus[key];
+                img.src = menu.image;
+                img.alt = menu.name;
+                name.textContent = menu.name;
+                desc.textContent = menu.desc;
+                price.textContent = '฿ ' + menu.price;
+                ingredientsList.innerHTML = '';
+                if (menu.ingredients && Array.isArray(menu.ingredients)) {
+                    menu.ingredients.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        ingredientsList.appendChild(li);
+                    });
+                }
+                modal.classList.add('show');
+                currentMenu = menu;
+            });
+        }
+    });
+
+    closeModal.addEventListener('click', function() {
+        modal.classList.remove('show'); // เปลี่ยนจาก modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.remove('show'); // เปลี่ยนจาก modal.style.display = 'none';
+        }
+    });
+
+    confirmBtn.addEventListener('click', function() {
+        if (!currentMenu) return;
+        const CART_KEY = 'crystalline_cart';
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const found = cart.find(item => item.id === currentMenu.id);
+        if (found) {
+            found.quantity += 1;
+        } else {
+            cart.push({
+                id: currentMenu.id,
+                name: currentMenu.name,
+                price: currentMenu.price,
+                quantity: 1,
+                image: currentMenu.image
+            });
+        }
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        confirmBtn.innerHTML = '<i class="fas fa-check mr-1"></i> เพิ่มแล้ว!';
+        confirmBtn.disabled = true;
+        setTimeout(() => {
+            confirmBtn.innerHTML = '<i class="fas fa-utensils mr-1"></i>ยืนยันสั่งซื้อ';
+            confirmBtn.disabled = false;
+            modal.classList.remove('show'); // เปลี่ยนจาก modal.style.display = 'none';
+        }, 1200);
+    });
+});
+        // เพิ่ม event ให้ปุ่ม Menu กดแล้วไป index.html (กันกรณี JS block หรือ SPA)
+document.addEventListener('DOMContentLoaded', function() {
+    var menuBtn = document.getElementById('menuBtn');
+    if(menuBtn) {
+        menuBtn.addEventListener('click', function(e) {
+            window.location.href = 'index.html';
+        });
+    }
+});
+    </script>
+</body>
+</html>
