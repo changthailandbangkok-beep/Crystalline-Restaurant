@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตะกร้าสินค้า - Crystalline Restaurant</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #0a0100;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Hide default number input arrows */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-animation: textfield;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section (similar to main page) -->
+    <header class="bg-[#c0392b] shadow-sm py-4 px-6 md:px-12 flex items-center justify-between">
+        <!-- Logo/Site Name -->
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="text-2xl font-bold text-white">Crystalline Restaurant</a>
+            <nav class="hidden md:flex space-x-6 text-white">
+                <a href="index.html" class="hover:text-[#ffe5e0] transition-colors">หน้าแรก</a>
+                <a href="#" class="hover:text-[#ffe5e0] transition-colors">สินค้า</a>
+                <a href="#" class="hover:text-[#ffe5e0] transition-colors">บทความ</a>
+                <a href="index010.html" class="hover:text-[#ffe5e0] transition-colors">ติดต่อเรา</a>
+            </nav>
+        </div>
+
+        <!-- User Actions -->
+        <div class="flex items-center space-x-4">
+            <a href="lookin01.html" id="login-btn" class="text-white hover:text-[#ffe5e0] transition-colors flex items-center">
+                <i class="fas fa-user mr-1"></i> เข้าสู่ระบบ
+            </a>
+            <button id="logout-btn" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center" style="display:none;">
+                <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+            </button>
+            <a href="#" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center relative">
+                <i class="fas fa-shopping-cart mr-2"></i> ตะกร้า
+                <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-[#c0392b] text-white text-xs font-bold px-2 py-0.5 rounded-full border border-white">156</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content - Shopping Cart -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <h1 class="text-4xl font-bold text-[#c0392b] mb-8 text-center">ตะกร้าสินค้าของคุณ</h1>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Cart Items List -->
+            <div class="lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
+                <div id="cart-items-container">
+                    <!-- Cart items will be rendered here by JavaScript -->
+                    <p id="empty-cart-message" class="text-center text-gray-500 text-lg hidden">
+                        ตะกร้าสินค้าของคุณว่างเปล่า
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="lg:w-1/3 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-[#c0392b] mb-6 border-b border-[#c0392b] pb-4">สรุปคำสั่งซื้อ</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-lg">
+                        <span>ราคารวมสินค้า:</span>
+                        <span id="cart-subtotal" class="font-semibold text-[#c0392b]">฿ 0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center text-2xl font-bold text-[#c0392b] border-t border-[#c0392b] pt-4 mt-4">
+                        <span>ยอดรวมทั้งหมด:</span>
+                        <span id="cart-total" class="text-[#c0392b]">฿ 0.00</span>
+                    </div>
+                </div>
+                <button id="checkout-button" class="mt-8 w-full bg-[#c0392b] text-white py-3 rounded-lg text-xl font-semibold hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors shadow-lg">
+                    ดำเนินการชำระเงิน
+                </button>
+                <a href="index.html" class="block text-center text-[#c0392b] hover:text-[#e74c3c] hover:underline mt-4">
+                    <i class="fas fa-arrow-left mr-2"></i> กลับไปเลือกซื้อสินค้า
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-black text-white py-10 px-6 md:px-12 mt-auto border-t border-black">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div>
+          <h3 class="text-2xl font-extrabold mb-4 text-[#c0392b] tracking-wide">Crystalline Restaurant</h3>
+          <p class="text-white text-base leading-relaxed">
+            ร้านอาหารหรู 5 ดาว – อาหารนานาชาติ อิตาเลียน ไทย ของหวาน และเครื่องดื่มสุดพรีเมียม
+          </p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-4 text-[#c0392b]">ลิงก์ด่วน</h3>
+          <ul class="space-y-2 text-base">
+            <li><a href="#" class="text-white hover:text-[#e74c3c] transition-colors">เมนูทั้งหมด</a></li>
+            <li><a href="#" class="text-white hover:text-[#e74c3c] transition-colors">โปรโมชั่น</a></li>
+            <li><a href="#" class="text-white hover:text-[#e74c3c] transition-colors">คำถามที่พบบ่อย</a></li>
+            <li><a href="#" class="text-white hover:text-[#e74c3c] transition-colors">นโยบายความเป็นส่วนตัว</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold mb-4 text-[#c0392b]">ติดต่อเรา</h3>
+          <p class="text-white text-base">
+            อีเมล: <span class="text-white">info@luxury5star.com</span><br>
+            โทร: <span class="text-white">012-345-6789</span><br>
+            ที่อยู่: 123 ถนนอาหารหรู, กรุงเทพฯ, 10000
+          </p>
+          <div class="flex space-x-4 mt-5">
+            <a href="#" class="text-white hover:text-[#e74c3c] transition-colors"><i class="fab fa-facebook-f text-2xl"></i></a>
+            <a href="#" class="text-white hover:text-[#e74c3c] transition-colors"><i class="fab fa-instagram text-2xl"></i></a>
+            <a href="#" class="text-white hover:text-[#e74c3c] transition-colors"><i class="fab fa-twitter text-2xl"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center text-white text-sm mt-10 pt-6 border-t border-black">
+        &copy; 2025 <span class="text-white font-semibold">Crystalline Restaurant</span>. All rights reserved.
+      </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let cart = [];
+
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const cartSubtotalElement = document.getElementById('cart-subtotal');
+            const cartTotalElement = document.getElementById('cart-total');
+            const checkoutButton = document.getElementById('checkout-button');
+
+            function saveCart() {
+                localStorage.setItem('razorhub_cart', JSON.stringify(cart));
+            }
+
+            function updateCartCountBadge() {
+                const badge = document.getElementById('cart-count-badge');
+                let cart = JSON.parse(localStorage.getItem('razorhub_cart')) || [];
+                // นับจำนวนรวมของสินค้าทั้งหมดในตะกร้า
+                const totalCount = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+                badge.textContent = totalCount;
+                // ซ่อน badge ถ้าไม่มีสินค้า
+                badge.style.display = totalCount > 0 ? 'inline-block' : 'none';
+            }
+
+            function renderCart() {
+                cart = JSON.parse(localStorage.getItem('razorhub_cart')) || [];
+                cartItemsContainer.innerHTML = '';
+
+                if (cart.length === 0) {
+                    emptyCartMessage.classList.remove('hidden');
+                    checkoutButton.disabled = true;
+                    checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    emptyCartMessage.classList.add('hidden');
+                    checkoutButton.disabled = false;
+                    checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.classList.add('flex', 'flex-col', 'sm:flex-row', 'items-center', 'justify-between', 'py-4', 'border-b', 'border-gray-100', 'last:border-b-0');
+                        itemElement.innerHTML = `
+                            <div class="flex items-center w-full sm:w-2/5 mb-4 sm:mb-0">
+                                <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-lg object-cover mr-4 shadow-sm">
+                                <span class="font-semibold text-lg text-gray-800">${item.name}</span>
+                            </div>
+                            <div class="flex items-center justify-between w-full sm:w-3/5">
+                                <span class="text-lg font-medium text-red-600 w-1/4 text-center">฿ ${item.price.toFixed(2)}</span>
+                                <div class="flex items-center w-1/4 justify-center">
+                                    <button class="quantity-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-l-md hover:bg-gray-300 transition-colors" data-id="${item.id}" data-action="decrease">-</button>
+                                    <input type="number" value="${item.quantity}" min="1" class="quantity-input w-12 text-center border-t border-b border-gray-200 focus:outline-none focus:border-red-500" data-id="${item.id}">
+                                    <button class="quantity-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-r-md hover:bg-gray-300 transition-colors" data-id="${item.id}" data-action="increase">+</button>
+                                </div>
+                                <span class="text-lg font-bold text-black w-1/4 text-center">฿ ${(item.price * item.quantity).toFixed(2)}</span>
+                                <button type="button" class="remove-item-btn text-gray-500 hover:text-red-600 transition-colors w-1/4 text-right" data-id="${item.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                }
+                updateCartSummary();
+                updateCartCountBadge();
+            }
+
+            function updateCartSummary() {
+                let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                let total = subtotal;
+                cartSubtotalElement.textContent = `฿ ${subtotal.toFixed(2)}`;
+                cartTotalElement.textContent = `฿ ${total.toFixed(2)}`;
+            }
+
+            cartItemsContainer.addEventListener('click', function(event) {
+                const removeBtn = event.target.closest('.remove-item-btn');
+                if (removeBtn) {
+                    const itemId = removeBtn.dataset.id;
+                    const itemIndex = cart.findIndex(item => item.id === itemId);
+                    if (itemIndex !== -1) {
+                        cart.splice(itemIndex, 1);
+                        saveCart();
+                        renderCart();
+                    }
+                    return;
+                }
+
+                const target = event.target;
+                const itemId = target.dataset.id;
+                if (!itemId) return;
+
+                const itemIndex = cart.findIndex(item => item.id === itemId);
+                if (itemIndex === -1) return;
+
+                if (target.classList.contains('quantity-btn')) {
+                    const action = target.dataset.action;
+                    if (action === 'increase') {
+                        cart[itemIndex].quantity++;
+                    } else if (action === 'decrease') {
+                        if (cart[itemIndex].quantity > 1) {
+                            cart[itemIndex].quantity--;
+                        }
+                    }
+                    saveCart();
+                    renderCart();
+                }
+            });
+
+            cartItemsContainer.addEventListener('change', function(event) {
+                const target = event.target;
+                if (target.classList.contains('quantity-input')) {
+                    const itemId = target.dataset.id;
+                    const newQuantity = parseInt(target.value);
+
+                    const itemIndex = cart.findIndex(item => item.id === itemId);
+                    if (itemIndex !== -1 && !isNaN(newQuantity) && newQuantity >= 1) {
+                        cart[itemIndex].quantity = newQuantity;
+                    } else {
+                        target.value = cart[itemIndex].quantity;
+                    }
+                    saveCart();
+                    renderCart();
+                }
+            });
+
+            renderCart();
+            updateCartCountBadge();
+
+            checkoutButton.addEventListener('click', function() {
+                if (cart.length > 0) {
+                    // ส่งข้อมูลยอดรวมไปหน้า paytoeat.html ด้วย query string
+                    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    window.location.href = `paytoeat.html?amount=${encodeURIComponent(total.toFixed(2))}`;
+                } else {
+                    alert('ตะกร้าสินค้าของคุณว่างเปล่า ไม่สามารถดำเนินการชำระเงินได้');
+                }
+            });
+        });
+    </script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD60lZDB8Qk-kl2GUL-_NK7JItML9S-TEc",
+            authDomain: "crystalline-restaurant.firebaseapp.com",
+            projectId: "crystalline-restaurant",
+            storageBucket: "crystalline-restaurant.firebasestorage.app",
+            messagingSenderId: "637558385298",
+            appId: "1:637558385298:web:ac380bfdabebb69009544b",
+            measurementId: "G-4RVP21DGJY"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // แสดง/ซ่อนปุ่ม login/logout ตามสถานะผู้ใช้
+        firebase.auth().onAuthStateChanged(function(user) {
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            if (user) {
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'flex';
+            } else {
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        });
+
+        // ฟังก์ชัน logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            firebase.auth().signOut().then(function() {
+                window.location.reload();
+            });
+        });
+    </script>
+</body>
+</html>

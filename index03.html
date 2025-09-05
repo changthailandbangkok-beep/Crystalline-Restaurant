@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านอาหารหรู5ดาว - หมวดอาหาร</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #222;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f3e6e3;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c0392b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a93226;
+        }
+        /* Style for the add to cart message */
+        #add-to-cart-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(1rem);
+            background: #c0392b;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px 0 rgba(192,57,43,0.15);
+            z-index: 50;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+        #add-to-cart-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+    <!-- เพิ่ม Firebase SDK ใน <head> -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-[#c0392b] shadow-sm py-4 px-6 md:px-12 flex items-center justify-between">
+        <!-- Logo/Site Name -->
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="text-2xl font-bold text-white hover:underline cursor-pointer">Crystalline Restaurant</a>
+            <nav class="hidden md:flex space-x-6 text-white">
+                <a href="index.html" class="hover:text-[#ffe5e0] transition-colors hover:underline cursor-pointer">หน้าแรก</a>
+                <a href="#" class="hover:text-[#ffe5e0] transition-colors font-semibold">เมนูอาหาร</a>
+                <a href="index010.html" class="hover:text-[#ffe5e0] transition-colors">ติดต่อเรา</a>
+            </nav>
+        </div>
+
+        <!-- User Actions -->
+        <div class="flex items-center space-x-4">
+            <a href="lookin01.html" id="login-btn" class="text-white hover:text-[#ffe5e0] transition-colors flex items-center">
+                <i class="fas fa-user mr-1"></i> เข้าสู่ระบบ
+            </a>
+            <button id="logout-btn" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center" style="display:none;">
+                <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+            </button>
+            <a href="index01.html" id="cart-btn" class="bg-white text-[#c0392b] px-4 py-2 rounded-full hover:bg-[#c0392b] hover:text-white border-2 border-white transition-colors flex items-center relative">
+                <i class="fas fa-shopping-cart mr-2"></i> ตะกร้า
+                <span id="cart-count-badge" class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-[#c0392b] bg-white border border-[#c0392b] rounded-full shadow absolute -top-2 -right-2"></span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content - Manual Razors List -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <!-- Replaced the single button with a category section as per the image -->
+        <h2 class="text-3xl font-bold text-[#c0392b] mb-8 text-center">
+        หมวดหมู่อาหาร
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-6 mb-12">
+            <a href="index02.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍚</span>
+                <span class="text-center text-gray-700 font-medium">อาหารไทย</span>
+            </a>
+            <a href="index03.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🌍</span>
+                <span class="text-center text-gray-700 font-medium">อาหารสไตล์อังกฤษ</span>
+            </a>
+            <a href="index04.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍕</span>
+                <span class="text-center text-gray-700 font-medium">อาหารอิตาลี</span>
+            </a>
+            <a href="index05.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍟</span>
+                <span class="text-center text-gray-700 font-medium">เมนูทอด</span>
+            </a>
+            <a href="index06.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🥨</span>
+                <span class="text-center text-gray-700 font-medium">อาหารทานเล่น</span>
+            </a>
+            <a href="index07.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🥤</span>
+                <span class="text-center text-gray-700 font-medium">เครื่องดื่ม</span>
+            </a>
+            <a href="index08.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍮</span>
+                <span class="text-center text-gray-700 font-medium">ขนมหวาน</span>
+            </a>
+            <a href="index09.html" class="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#c0392b]">
+                <span class="text-3xl mb-2">🍰</span>
+                <span class="text-center text-gray-700 font-medium">เค้ก</span>
+            </a>
+        </div>
+
+        <h1 class="text-4xl font-bold text-black mb-8 text-center">อาหารสไตล์อังกฤษ</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Food Card 1: English Breakfast -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="English Breakfast.jpg" alt="English Breakfast" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">English Breakfast</h3>
+                    <p class="text-gray-700 text-sm mb-2">ไข่ดาว เบคอน ขนมปังปิ้ง และถั่วอบ</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 199</span>
+                        <div class="flex gap-2">
+                            <button class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="english-breakfast"
+                                data-name="English Breakfast"
+                                data-price="199"
+                                data-image="English Breakfast.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors" 
+                                data-name="English Breakfast" 
+                                data-desc="ไข่ดาว เบคอน ขนมปังปิ้ง และถั่วอบ" 
+                                data-ingredients="ไข่, เบคอน, ขนมปัง, ถั่วอบ, มะเขือเทศ, เห็ด, ไส้กรอก" 
+                                data-price="199" 
+                                data-image="English Breakfast.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Food Card 2: Beef Steak -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="beef steak.jpg" alt="Beef Steak" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Beef Steak</h3>
+                    <p class="text-gray-700 text-sm mb-2">เนื้อวัวชิ้นหนา ย่างจนสุกกำลังดี เสิร์ฟพร้อมมันฝรั่งบด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 259</span>
+                        <div class="flex gap-2">
+                            <button class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="beef-steak"
+                                data-name="Beef Steak"
+                                data-price="259"
+                                data-image="beef steak.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors" 
+                                data-name="Beef Steak" 
+                                data-desc="เนื้อวัวชิ้นหนา ย่างจนสุกกำลังดี เสิร์ฟพร้อมมันฝรั่งบด" 
+                                data-ingredients="เนื้อวัว, เกลือ, พริกไทย, มันฝรั่ง, เนย, ซอสสเต็ก" 
+                                data-price="259" 
+                                data-image="beef steak.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Food Card 3: Scotch Eggs -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Scotch Eggs.jpg" alt="Scotch Eggs" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Scotch Eggs</h3>
+                    <p class="text-gray-700 text-sm mb-2">ไข่ต้มชุบแป้งทอด กรอบนอกนุ่มใน เสิร์ฟพร้อมซอสพริก</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 170</span>
+                        <div class="flex gap-2">
+                            <button class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="scotch-eggs"
+                                data-name="Scotch Eggs"
+                                data-price="170"
+                                data-image="Scotch Eggs.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors" 
+                                data-name="Scotch Eggs" 
+                                data-desc="ไข่ต้มชุบแป้งทอด กรอบนอกนุ่มใน เสิร์ฟพร้อมซอสพริก" 
+                                data-ingredients="ไข่, หมูสับ, เกล็ดขนมปัง, แป้ง, น้ำมัน, ซอสพริก" 
+                                data-price="170" 
+                                data-image="Scotch Eggs.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Food Card 4: Fish & Chips -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Fish & Chips.webp" alt="Fish & Chips" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Fish & Chips</h3>
+                    <p class="text-gray-700 text-sm mb-2">ปลาชุบแป้งทอดกรอบ เสิร์ฟพร้อมมันฝรั่งทอดและซอสทาร์ทาร์</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 399</span>
+                        <div class="flex gap-2">
+                            <button class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="fish-chips"
+                                data-name="Fish & Chips"
+                                data-price="399"
+                                data-image="Fish & Chips.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors" 
+                                data-name="Fish & Chips" 
+                                data-desc="ปลาชุบแป้งทอดกรอบ เสิร์ฟพร้อมมันฝรั่งทอดและซอสทาร์ทาร์" 
+                                data-ingredients="ปลา, แป้ง, น้ำมัน, มันฝรั่ง, ซอสทาร์ทาร์, เกลือ, พริกไทย" 
+                                data-price="399" 
+                                data-image="Fish & Chips.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Food Card 5: Shepherd’s Pie -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Shepherd’s Pie.jpg" alt="Shepherd’s Pie" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Shepherd’s Pie</h3>
+                    <p class="text-gray-700 text-sm mb-2">เนื้อแกะบดปรุงรส เสิร์ฟในถ้วยพร้อมมันฝรั่งบด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 229</span>
+                        <div class="flex gap-2">
+                            <button class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="shepherds-pie"
+                                data-name="Shepherd’s Pie"
+                                data-price="229"
+                                data-image="Shepherd’s Pie.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors" 
+                                data-name="Shepherd’s Pie" 
+                                data-desc="เนื้อแกะบดปรุงรส เสิร์ฟในถ้วยพร้อมมันฝรั่งบด" 
+                                data-ingredients="เนื้อแกะ, มันฝรั่ง, หัวหอม, แครอท, ถั่วลันเตา, ซอสเกรวี่" 
+                                data-price="229" 
+                                data-image="Shepherd’s Pie.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ... (repeat for carbonara-6 to carbonara-20, all with .add-to-cart-btn and data attributes) ... -->
+            <!-- For brevity, only the first 5 are shown here, but all 20 should be updated in the same way -->
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Pie and Mash.jpg" alt="Pie and Mash" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Pie and Mash</h3>
+                    <p class="text-gray-700 text-sm mb-2">พายเนื้อเสิร์ฟพร้อมมันบดและซอสเกรวี่</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 375</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-pie-mash" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="pie-mash"
+                                data-name="Pie and Mash"
+                                data-price="375"
+                                data-image="Pie and Mash.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Pie and Mash"
+                                data-desc="พายเนื้อเสิร์ฟพร้อมมันบดและซอสเกรวี่"
+                                data-ingredients="เนื้อ, แป้งพาย, มันฝรั่ง, ซอสเกรวี่, เครื่องเทศ"
+                                data-price="375"
+                                data-image="Pie and Mash.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Bangers & Mash.jpg" alt="Bangers & Mash" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูแนะนำ</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Bangers & Mash</h3>
+                    <p class="text-gray-700 text-sm mb-2">ไส้กรอกหมูเสิร์ฟพร้อมมันบดและซอสเกรวี่</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 289</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-bangers-mash" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="bangers-mash"
+                                data-name="Bangers & Mash"
+                                data-price="289"
+                                data-image="Bangers & Mash.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Bangers & Mash"
+                                data-desc="ไส้กรอกหมูเสิร์ฟพร้อมมันบดและซอสเกรวี่"
+                                data-ingredients="ไส้กรอกหมู, มันฝรั่งบด, ซอสเกรวี่, เครื่องเทศ"
+                                data-price="289"
+                                data-image="Bangers & Mash.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Sunday Roast with Yorkshire Pudding.jpg" alt="Sunday Roast with Yorkshire Pudding" class="w-full h-48 object-cover">
+                    <span class="absolute top-2 left-2 bg-[#c0392b] text-white text-xs font-semibold px-2 py-1 rounded-full">เมนูใหม่</span>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Sunday Roast with Yorkshire Pudding</h3>
+                    <p class="text-gray-700 text-sm mb-2">เนื้ออบเสิร์ฟพร้อมมันฝรั่งและซอสเกรวี่</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 549</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-sunday-roast" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="sunday-roast"
+                                data-name="Sunday Roast with Yorkshire Pudding"
+                                data-price="549"
+                                data-image="Sunday Roast with Yorkshire Pudding.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Sunday Roast with Yorkshire Pudding"
+                                data-desc="เนื้ออบเสิร์ฟพร้อมมันฝรั่งและซอสเกรวี่"
+                                data-ingredients="เนื้ออบ, มันฝรั่ง, Yorkshire Pudding, ซอสเกรวี่, ผัก"
+                                data-price="549"
+                                data-image="Sunday Roast with Yorkshire Pudding.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Beef Wellington.jpg" alt="Beef Wellington" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Beef Wellington</h3>
+                    <p class="text-gray-700 text-sm mb-2">เนื้อวัวห่อด้วยแป้งพาย เสิร์ฟพร้อมผักและซอส</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 789</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-carbonara-5" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="carbonara-5"
+                                data-name="Beef Wellington"
+                                data-price="789"
+                                data-image="Beef Wellington.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Beef Wellington"
+                                data-desc="เนื้อวัวห่อด้วยแป้งพาย เสิร์ฟพร้อมผักและซอส"
+                                data-ingredients="เนื้อวัว, แป้งพาย, เห็ด, ผัก, ซอส, เครื่องเทศ"
+                                data-price="789"
+                                data-image="Beef Wellington.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Roast Duck – Four Seasons.webp" alt="Roast Duck – Four Seasons" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Roast Duck – Four Seasons เป็ดย่างโฟร์ซีซั่นส์</h3>
+                    <p class="text-gray-700 text-sm mb-2">เป็ดอบกรอบ เสิร์ฟพร้อมผักและซอส</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 489</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-carbonara-6" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="carbonara-6"
+                                data-name="Roast Duck – Four Seasons เป็ดย่างโฟร์ซีซั่นส์"
+                                data-price="489"
+                                data-image="Roast Duck – Four Seasons.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Roast Duck – Four Seasons เป็ดย่างโฟร์ซีซั่นส์"
+                                data-desc="เป็ดอบกรอบ เสิร์ฟพร้อมผักและซอส"
+                                data-ingredients="เป็ด, ผัก, ซอส, เครื่องเทศ"
+                                data-price="489"
+                                data-image="Roast Duck – Four Seasons.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Beef stew.webp" alt="Beef stew" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Beef stew</h3>
+                    <p class="text-gray-700 text-sm mb-2">เนื้อวัวตุ๋นจนเปื่อย เสิร์ฟพร้อมมันฝรั่งและแครอท</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 259</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-beef-stew" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="beef-stew"
+                                data-name="Beef stew"
+                                data-price="259"
+                                data-image="Beef stew.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Beef stew"
+                                data-desc="เนื้อวัวตุ๋นจนเปื่อย เสิร์ฟพร้อมมันฝรั่งและแครอท"
+                                data-ingredients="เนื้อวัว, มันฝรั่ง, แครอท, หัวหอม, ซุป, เครื่องเทศ"
+                                data-price="259"
+                                data-image="Beef stew.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Fish pie.webp" alt="Fish pie" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Fish pie</h3>
+                    <p class="text-gray-700 text-sm mb-2">พายปลาทะเลอบกรอบ เสิร์ฟพร้อมมันบดและผัก</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 319</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-fish-pie" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="fish-pie"
+                                data-name="Fish pie"
+                                data-price="319"
+                                data-image="Fish pie.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Fish pie"
+                                data-desc="พายปลาทะเลอบกรอบ เสิร์ฟพร้อมมันบดและผัก"
+                                data-ingredients="ปลา, แป้งพาย, มันฝรั่ง, ผัก, เครื่องเทศ"
+                                data-price="319"
+                                data-image="Fish pie.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Sunday Roast with Yorkshire Pudding.webp" alt="Toad in the Hole" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Toad in the Hole</h3>
+                    <p class="text-gray-700 text-sm mb-2">ไส้กรอกอบในแป้งพาย เสิร์ฟพร้อมมันฝรั่งและผัก</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 278</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-sunday-roast" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="sunday-roast"
+                                data-name="Toad in the Hole"
+                                data-price="278"
+                                data-image="Sunday Roast with Yorkshire Pudding.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Toad in the Hole"
+                                data-desc="ไส้กรอกอบในแป้งพาย เสิร์ฟพร้อมมันฝรั่งและผัก"
+                                data-ingredients="ไส้กรอก, แป้งพาย, มันฝรั่ง, ผัก, เครื่องเทศ"
+                                data-price="278"
+                                data-image="Sunday Roast with Yorkshire Pudding.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Steak and Kidney Pie.jpg" alt="Steak and Kidney Pie" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Steak and Kidney Pie</h3>
+                    <p class="text-gray-700 text-sm mb-2">พายเนื้อและไตวัว เสิร์ฟพร้อมมันฝรั่งบดและผัก</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 449</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-steak-kidney-pie" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="steak-kidney-pie"
+                                data-name="Steak and Kidney Pie"
+                                data-price="449"
+                                data-image="Steak and Kidney Pie.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Steak and Kidney Pie"
+                                data-desc="พายเนื้อและไตวัว เสิร์ฟพร้อมมันฝรั่งบดและผัก"
+                                data-ingredients="เนื้อวัว, ไตวัว, แป้งพาย, มันฝรั่ง, ผัก, เครื่องเทศ"
+                                data-price="449"
+                                data-image="Steak and Kidney Pie.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Bacon Sandwich.jpg" alt="Bacon Sandwich" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Bacon Sandwich</h3>
+                    <p class="text-gray-700 text-sm mb-2">ขนมปังแซนด์วิชเบคอนกรอบ เสิร์ฟพร้อมมันฝรั่งทอด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 149</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-bacon-sandwich" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="bacon-sandwich"
+                                data-name="Bacon Sandwich"
+                                data-price="149"
+                                data-image="Bacon Sandwich.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Bacon Sandwich"
+                                data-desc="ขนมปังแซนด์วิชเบคอนกรอบ เสิร์ฟพร้อมมันฝรั่งทอด"
+                                data-ingredients="ขนมปัง, เบคอน, มันฝรั่งทอด, เนย, เครื่องเทศ"
+                                data-price="149"
+                                data-image="Bacon Sandwich.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="BBQ Pork Ribs.webp" alt="BBQ Pork Ribs" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">BBQ Pork Ribs</h3>
+                    <p class="text-gray-700 text-sm mb-2">ซี่โครงหมูบาร์บีคิวรมควัน เสิร์ฟพร้อมมันฝรั่งทอด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 399</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-bbq-pork-ribs" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="bbq-pork-ribs"
+                                data-name="BBQ Pork Ribs"
+                                data-price="399"
+                                data-image="BBQ Pork Ribs.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="BBQ Pork Ribs"
+                                data-desc="ซี่โครงหมูบาร์บีคิวรมควัน เสิร์ฟพร้อมมันฝรั่งทอด"
+                                data-ingredients="ซี่โครงหมู, ซอสบาร์บีคิว, มันฝรั่งทอด, เครื่องเทศ"
+                                data-price="399"
+                                data-image="BBQ Pork Ribs.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="BBQ Skewers Recipe.webp" alt="BBQ Skewers" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">setBBQ Skewers-ชุดสูตรบาร์บีคิวเสียบไม้</h3>
+                    <p class="text-gray-700 text-sm mb-2">หมูปิ้งบาร์บีคิว เสิร์ฟพร้อมซอสพริกหวาน</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 289</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-bbq-skewers" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="bbq-skewers"
+                                data-name="BBQ Skewers"
+                                data-price="289"
+                                data-image="BBQ Skewers Recipe.webp">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="BBQ Skewers"
+                                data-desc="หมูปิ้งบาร์บีคิว เสิร์ฟพร้อมซอสพริกหวาน"
+                                data-ingredients="หมู, ซอสบาร์บีคิว, พริกหวาน, ไม้เสียบ, เครื่องเทศ"
+                                data-price="289"
+                                data-image="BBQ Skewers Recipe.webp">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="Butter Grilled Shrimp.jpg" alt="Butter Grilled Shrimp" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">Butter Grilled Shrimp</h3>
+                    <p class="text-gray-700 text-sm mb-2">กุ้งย่างเนย เสิร์ฟพร้อมซอสพริกหวาน</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 399</span>
+                        <div class="flex gap-2">
+                            <button id="addToCart-butter-grilled-shrimp" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                                data-id="butter-grilled-shrimp"
+                                data-name="Butter Grilled Shrimp"
+                                data-price="399"
+                                data-image="Butter Grilled Shrimp.jpg">
+                                <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                            </button>
+                            <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors"
+                                data-name="Butter Grilled Shrimp"
+                                data-desc="กุ้งย่างเนย เสิร์ฟพร้อมซอสพริกหวาน"
+                                data-ingredients="กุ้ง, เนย, ซอสพริกหวาน, เครื่องเทศ"
+                                data-price="399"
+                                data-image="Butter Grilled Shrimp.jpg">
+                                <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="ซุปผักโขมโฮมเมด.webp" alt="ซุปผักโขมโฮมเมด" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">ซุปผักโขมโฮมเมด</h3>
+                    <p class="text-gray-700 text-sm mb-2">ซุปผักโขมเข้มข้น เสิร์ฟพร้อมขนมปังโฮมเมด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 169</span>
+                        <button id="addToCart-carbonara-15" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="soup-spinach"
+                            data-name="ซุปผักโขมโฮมเมด"
+                            data-price="169"
+                            data-image="ซุปผักโขมโฮมเมด.webp">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="ซุปผักโขมโฮมเมด"
+                            data-desc="ซุปผักโขมเข้มข้น เสิร์ฟพร้อมขนมปังโฮมเมด"
+                            data-ingredients="ผักโขม, ครีม, ขนมปัง, เครื่องเทศ"
+                            data-price="169"
+                            data-image="ซุปผักโขมโฮมเมด.webp">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="relative">
+                    <img src="ซุปมะเขือเทศ.webp" alt="ซุปมะเขือเทศ" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-black mb-1">ซุปมะเขือเทศ</h3>
+                    <p class="text-gray-700 text-sm mb-2">ซุปมะเขือเทศเข้มข้น เสิร์ฟพร้อมขนมปังโฮมเมด</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[#c0392b] font-bold text-xl">฿ 179</span>
+                        <button id="addToCart-carbonara-16" class="add-to-cart-btn bg-[#c0392b] text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-[#c0392b] border-2 border-[#c0392b] transition-colors"
+                            data-id="soup-tomato"
+                            data-name="ซุปมะเขือเทศ"
+                            data-price="179"
+                            data-image="ซุปมะเขือเทศ.webp">
+                            <i class="fas fa-utensils mr-1"></i> สั่งซื้อ
+                        </button>
+                        <button class="show-detail-btn bg-white text-[#c0392b] border-2 border-[#c0392b] px-3 py-2 rounded-full text-sm hover:bg-[#c0392b] hover:text-white transition-colors ml-2"
+                            data-name="ซุปมะเขือเทศ"
+                            data-desc="ซุปมะเขือเทศเข้มข้น เสิร์ฟพร้อมขนมปังโฮมเมด"
+                            data-ingredients="มะเขือเทศ, ครีม, ขนมปัง, เครื่องเทศ"
+                            data-price="179"
+                            data-image="ซุปมะเขือเทศ.webp">
+                            <i class="fas fa-info-circle mr-1"></i> ดูรายละเอียด
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add to Cart Message -->
+    <div id="add-to-cart-message" class="hidden">
+        <i class="fas fa-check-circle mr-2"></i> เพิ่มสินค้าลงตะกร้าแล้ว!
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-black text-white py-8 px-6 md:px-12 mt-auto">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+            <h3 class="text-lg font-semibold mb-4 text-[#c0392b]">Crystalline Restaurant</h3>
+            <p class="text-white text-sm">
+                Crystalline Restaurant บรรยากาศดี อาหารไทยต้นตำรับและนานาชาติ พร้อมบริการระดับพรีเมียม
+            </p>
+            </div>
+            <div>
+            <h3 class="text-lg font-semibold mb-4 text-[#c0392b]">ลิงก์ด่วน</h3>
+            <ul class="space-y-2 text-sm">
+                <li><a href="#" class="text-white hover:text-[#c0392b] transition-colors">เมนูอาหารทั้งหมด</a></li>
+            </ul>
+            </div>
+            <div>
+            <h3 class="text-lg font-semibold mb-4 text-[#c0392b]">ติดต่อเรา</h3>
+            <p class="text-white text-sm">
+                อีเมล: info@luxuryfood.com<br>
+                โทร: 012-345-6789<br>
+                ที่อยู่: 123 ถนนอาหารไทย, กรุงเทพฯ, 10000
+            </p>
+            <div class="flex space-x-4 mt-4">
+                <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-white hover:text-[#c0392b] transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+            </div>
+            </div>
+        </div>
+        <div class="text-center text-[#c0392b] text-sm mt-8 pt-6 border-t border-[#c0392b]">
+            &copy; 2025 <span class="text-white">Crystalline Restaurant</span>. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            const addToCartMessage = document.getElementById('add-to-cart-message');
+            const cartCountBadge = document.getElementById('cart-count-badge');
+            const CART_KEY = 'razorhub_cart';
+
+            function updateCartCount() {
+                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                let count = cart.reduce((sum, item) => sum + item.quantity, 0);
+                if (cartCountBadge) {
+                    cartCountBadge.textContent = count > 0 ? count : '';
+                }
+            }
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.dataset.id;
+                    const productName = this.dataset.name;
+                    const productPrice = parseFloat(this.dataset.price);
+                    const productImage = this.dataset.image;
+
+                    // Get current cart from localStorage
+                    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+                    // Check if product already exists in cart
+                    const existingItemIndex = cart.findIndex(item => item.id === productId);
+
+                    if (existingItemIndex > -1) {
+                        // If exists, just increase quantity
+                        cart[existingItemIndex].quantity++;
+                    } else {
+                        // If not, add new item
+                        cart.push({
+                            id: productId,
+                            name: productName,
+                            price: productPrice,
+                            quantity: 1,
+                            image: productImage
+                        });
+                    }
+
+                    // Save updated cart to localStorage
+                    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+                    // Update badge
+                    updateCartCount();
+
+                    // Show success message (เปลี่ยนข้อความเป็น "เพิ่มแล้ว")
+                    addToCartMessage.innerHTML = '<i class="fas fa-check-circle mr-2"></i> เพิ่มแล้ว!';
+                    addToCartMessage.classList.remove('hidden');
+                    addToCartMessage.classList.add('show');
+                    // เปลี่ยนข้อความปุ่มเป็น "เพิ่มแล้ว" ชั่วคราว
+                    const originalBtnText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check-circle mr-1"></i> เพิ่มแล้ว!';
+                    this.disabled = true;
+                    setTimeout(() => {
+                        addToCartMessage.classList.remove('show');
+                        setTimeout(() => {
+                            addToCartMessage.classList.add('hidden');
+                            // คืนข้อความเดิม
+                            addToCartMessage.innerHTML = '<i class="fas fa-check-circle mr-2"></i> เพิ่มสินค้าลงตะกร้าแล้ว!';
+                            this.innerHTML = originalBtnText;
+                            this.disabled = false;
+                        }, 300);
+                    }, 1200);
+                });
+            });
+
+            // Show cart count on page load
+            updateCartCount();
+
+            // Modal logic for product details
+            const detailModal = document.getElementById('product-detail-modal');
+            const detailModalOverlay = document.getElementById('product-detail-modal-overlay');
+            const detailModalClose = document.getElementById('product-detail-modal-close');
+            const detailModalImg = document.getElementById('product-detail-modal-img');
+            const detailModalName = document.getElementById('product-detail-modal-name');
+            const detailModalDesc = document.getElementById('product-detail-modal-desc');
+            const detailModalIngredients = document.getElementById('product-detail-modal-ingredients');
+            const detailModalPrice = document.getElementById('product-detail-modal-price');
+
+            document.querySelectorAll('.show-detail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!detailModal) return;
+                    detailModalImg.src = this.dataset.image;
+                    detailModalName.textContent = this.dataset.name;
+                    detailModalDesc.textContent = this.dataset.desc;
+                    detailModalIngredients.textContent = this.dataset.ingredients;
+                    detailModalPrice.textContent = '฿ ' + this.dataset.price;
+                    detailModal.classList.remove('hidden');
+                    detailModalOverlay.classList.remove('hidden');
+                });
+            });
+            if (detailModalClose) {
+                detailModalClose.addEventListener('click', function() {
+                    detailModal.classList.add('hidden');
+                    detailModalOverlay.classList.add('hidden');
+                });
+            }
+            if (detailModalOverlay) {
+                detailModalOverlay.addEventListener('click', function() {
+                    detailModal.classList.add('hidden');
+                    detailModalOverlay.classList.add('hidden');
+                });
+            }
+        });
+    </script>
+    <!-- Product Detail Modal -->
+    <div id="product-detail-modal-overlay" class="fixed inset-0 bg-black bg-opacity-40 z-40 hidden"></div>
+    <div id="product-detail-modal" class="fixed z-50 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl w-full max-w-md p-6 hidden">
+        <button id="product-detail-modal-close" class="absolute top-2 right-2 text-gray-400 hover:text-[#c0392b] text-2xl focus:outline-none">&times;</button>
+        <img id="product-detail-modal-img" src="" alt="" class="w-full h-48 object-cover rounded-lg mb-4">
+        <h2 id="product-detail-modal-name" class="text-2xl font-bold text-[#c0392b] mb-2"></h2>
+        <p id="product-detail-modal-desc" class="text-gray-700 mb-2"></p>
+        <div class="mb-2">
+            <span class="font-semibold text-[#c0392b]">ส่วนผสม:</span>
+            <span id="product-detail-modal-ingredients" class="text-gray-600"></span>
+        </div>
+        <div class="text-xl font-bold text-[#c0392b] mb-2">
+            <span id="product-detail-modal-price"></span>
+        </div>
+    </div>
+
+    <script>
+    // Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyD60lZDB8Qk-kl2GUL-_NK7JItML9S-TEc",
+        authDomain: "crystalline-restaurant.firebaseapp.com",
+        projectId: "crystalline-restaurant",
+        storageBucket: "crystalline-restaurant.firebasestorage.app",
+        messagingSenderId: "637558385298",
+        appId: "1:637558385298:web:ac380bfdabebb69009544b",
+        measurementId: "G-4RVP21DGJY"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged(function(user) {
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        if (user) {
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'flex';
+        } else {
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', function() {
+        firebase.auth().signOut().then(function() {
+            window.location.reload();
+        });
+    });
+    </script>
+</body>
+</html>

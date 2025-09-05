@@ -1,0 +1,41 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = ""; // ถ้าไม่ได้ตั้งรหัสผ่าน
+$dbname = "crystalline_restaurant";
+
+// เชื่อมต่อฐานข้อมูล
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// เพิ่มข้อมูล
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $category = $_POST['category'];
+
+    $sql = "INSERT INTO foods (name, price, category_id) VALUES ('$name', '$price', '$category')";
+    if ($conn->query($sql) === TRUE) {
+        echo "บันทึกข้อมูลสำเร็จ";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+$conn->close();
+?>
+
+<form action="save_food.php" method="post">
+  <label>ชื่ออาหาร: <input type="text" name="name" required></label><br>
+  <label>ราคา: <input type="number" name="price" required></label><br>
+  <label>ประเภท:
+    <select name="category" required>
+      <option value="1">อาหารคาว</option>
+      <option value="2">อาหารหวาน</option>
+      <!-- เพิ่มตาม category_id ใน food_categories -->
+    </select>
+  </label><br>
+  <button type="submit">บันทึก</button>
+</form>
